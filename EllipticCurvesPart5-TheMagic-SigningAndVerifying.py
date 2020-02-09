@@ -16,7 +16,7 @@ def modinv(a,n=Pcurve): #Extended Euclidean Algorithm/'division' in elliptic cur
     lm, hm = 1,0
     low, high = a%n,n
     while low > 1:
-        ratio = high/low
+        ratio = high//low
         nm, new = hm-lm*ratio, high-low*ratio
         lm, low, hm, high = nm, new, lm, low
     return lm % n
@@ -45,19 +45,28 @@ def EccMultiply(xs,ys,Scalar): # Double & add. EC Multiplication, Not true multi
             Qx,Qy=ECadd(Qx,Qy,xs,ys); # print "ADD", Qx; print
     return (Qx,Qy)
 
-print; print "******* Public Key Generation *********"
+print()
+print ("******* Public Key Generation *********")
 xPublicKey, yPublicKey = EccMultiply(Gx,Gy,privKey)
-print "the private key (in base 10 format):"; print privKey; print
-print "the uncompressed public key (starts with '04' & is not the public address):"; print "04",xPublicKey,yPublicKey
+print ("the private key (in base 10 format):")
+print (privKey)
+print()
+print ("the uncompressed public key (starts with '04' & is not the public address):")
+print ("04",xPublicKey,yPublicKey)
 
-print; print "******* Signature Generation *********"
+print()
+print ("******* Signature Generation *********")
 xRandSignPoint, yRandSignPoint = EccMultiply(Gx,Gy,RandNum)
-r = xRandSignPoint % N; print "r =", r
-s = ((HashOfThingToSign + r*privKey)*(modinv(RandNum,N))) % N; print "s =", s
+r = xRandSignPoint % N
+print ("r =", r)
+s = ((HashOfThingToSign + r*privKey)*(modinv(RandNum,N))) % N
+print ("s =", s)
 
-print; print "******* Signature Verification *********>>"
+print()
+print ("******* Signature Verification *********>>")
 w = modinv(s,N)
 xu1, yu1 = EccMultiply(Gx,Gy,(HashOfThingToSign * w)%N)
 xu2, yu2 = EccMultiply(xPublicKey,yPublicKey,(r*w)%N)
 x,y = ECadd(xu1,yu1,xu2,yu2)
-print r==x; print
+print (r==x)
+print()
